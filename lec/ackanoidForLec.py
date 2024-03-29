@@ -6,6 +6,8 @@ W, H = 1200, 800
 FPS = 60
 
 screen = pygame.display.set_mode((W, H), pygame.RESIZABLE)
+transparent_surface = pygame.Surface((W, H), pygame.SRCALPHA)
+transparent_surface.fill((255, 255, 255, 50))
 clock = pygame.time.Clock()
 done = False
 bg = (0, 0, 0)
@@ -59,7 +61,7 @@ block_list = [pygame.Rect(10 + 120 * i, 50 + 70 * j,
 color_list = [(random.randrange(0, 255), 
     random.randrange(0, 255),  random.randrange(0, 255))
               for i in range(10) for j in range(4)] 
-print(block_list)
+
 #Game over Screen
 losefont = pygame.font.SysFont('comicsansms', 40)
 losetext = losefont.render('Game Over', True, (255, 255, 255))
@@ -89,14 +91,11 @@ while not done:
 
     screen.fill(bg)
     
-    # print(next(enumerate(block_list)))
-    
     if not paused:
         [pygame.draw.rect(screen, color_list[color], block)
         for color, block in enumerate (block_list)] #drawing blocks
         pygame.draw.rect(screen, pygame.Color(255, 255, 255), paddle)
         pygame.draw.circle(screen, pygame.Color(255, 0, 0), ball.center, ballRadius)
-        # print(next(enumerate (block_list)))
 
         #Ball movement
         ball.x += ballSpeed * dx
@@ -141,7 +140,8 @@ while not done:
         if key[pygame.K_RIGHT] and paddle.right < W:
             paddle.right += paddleSpeed
     else:  # If the game is paused, display the pause screen
+        screen.blit(transparent_surface, (0, 0))
         screen.blit(pausetext, pausetextRect)  
-
+        
     pygame.display.flip()
     clock.tick(FPS)
